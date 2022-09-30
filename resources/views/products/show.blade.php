@@ -17,24 +17,24 @@
             @csrf
 
             <input type="hidden" name="product_id" value="{{ $product->id }}">
-            <div class="form-group">
-              <label for="quantity" class="text-danger">Quantité</label>
-              <input type="number" id="quantity" name="quantity" value="1" class="form-control col-md-3" required>
-            </div>
-            <button type="submit"  class="btn btn-info" name="button">
-            <i data-feather="plus" stroke-width="2" width="16" height="16"></i>
-              <span class="text-icon">Ajouter au panier</span>
-            </button>
-            @auth
+              <div class="form-group">
+                  <label for="quantity" class="text-danger">Quantité</label>
+                  <input type="number" id="quantity" name="quantity" value="1" class="form-control col-md-3" required>
+              </div>
+              <button type="submit" class="btn btn-info" name="button">
+                  <i data-feather="shopping-cart" stroke-width="2" width="16" height="16"></i>
+                  <span class="text-icon">Ajouter au panier</span>
+              </button>
+              @auth
             <a href="{{ route('products.edit', $product->slug) }}" class="btn btn-warning">
-            <i data-feather="edit" stroke-width="2" width="16" height="16"></i>
-              <span class="text-icon"> Modifier</span>
+                <i data-feather="edit" stroke-width="2" width="16" height="16"></i>
+                <span class="text-icon"> Modifier</span>
             </a>
-            <a href="" class="btn btn-danger">
-            <i data-feather="trash-2" stroke-width="2" width="16" height="16"></i>
-              <span class="text-icon"> Supprimer</span>
-            </a>
-            @endauth
+                  <a href="" class="btn btn-danger">
+                      <i data-feather="trash-2" stroke-width="2" width="16" height="16"></i>
+                      <span class="text-icon"> Supprimer</span>
+                  </a>
+              @endauth
           </form>
         </div>
         <div class="col-auto d-none d-lg-block">

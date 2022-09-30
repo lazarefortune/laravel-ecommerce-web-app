@@ -38,26 +38,47 @@
                 </span>
             @enderror
           </div>
-          <div class="form-group">
-            <label for="description" class="font-weight-bold">Description</label>
-            <textarea name="description" id="description" rows="3" class="form-control @error('description') is-invalid @enderror" cols="80">{{ old('description') ?? $product->description }}</textarea>
-            @error('description')
+            <div class="form-group">
+                <label for="description" class="font-weight-bold">Description</label>
+                <textarea name="description" id="description" rows="3"
+                          class="form-control @error('description') is-invalid @enderror"
+                          cols="80">{{ old('description') ?? $product->description }}</textarea>
+                @error('description')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>
-            @enderror
-          </div>
-          <div class="form-group">
-            <label for="price" class="font-weight-bold">Prix (Euro) * 100</label>
-            <input type="number" name="price" id="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price') ?? $product->price }}">
-            @error('price')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
-          </div>
+                @enderror
+            </div>
+            {{--          <div class="form-group">--}}
+            {{--            <label for="price" class="font-weight-bold">Prix (€)</label>--}}
+            {{--            <input type="text" name="price" id="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price') ?? $product->price }}">--}}
+            {{--            @error('price')--}}
+            {{--                <span class="invalid-feedback" role="alert">--}}
+            {{--                    <strong>{{ $message }}</strong>--}}
+            {{--                </span>--}}
+            {{--            @enderror--}}
+            {{--          </div>--}}
 
-          <button type="submit" class="btn btn-success" name="button">Mettre à jour le produit</button>
+            <div class="form-group mb-4">
+                <label for="price" class="font-weight-bold">Montant</label>
+                <div class="input-group">
+                    <input type="text" name="price" id="price" class="form-control @error('price') is-invalid @enderror"
+                           value="{{ old('price') ?? $product->price }}">
+                    <div class="input-group-append">
+                        <span class="input-group-text">€</span>
+                    </div>
+                </div>
+                @error('price')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
+
+            <button type="submit" class="btn btn-success" name="button">
+                <i data-feather="save" stroke-width="2" width="16" height="16"></i>
+                Enregistrer
+            </button>
         </form>
       </div>
 

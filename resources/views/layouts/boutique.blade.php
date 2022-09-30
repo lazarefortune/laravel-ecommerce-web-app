@@ -8,25 +8,28 @@
     <meta name="generator" content="Jekyll v4.0.1">
     <title>E-commerce</title>
 
-    @yield('extra-script')
+      @yield('extra-script')
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/blog/">
+      <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/blog/">
 
-    <!-- Bootstrap core CSS -->
-    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
-    <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+      <!-- Bootstrap core CSS -->
+      <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+      <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
-    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
-    <!-- Custom styles for this template -->
-    <link href="blog.css" rel="stylesheet">
+      <!-- Custom styles for this template -->
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+      {{--    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">--}}
+      <!-- Custom styles for this template -->
+      <link href="blog.css" rel="stylesheet">
 
-    <!-- font awesome -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+      <!-- font awesome -->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body>
 
-    <div class="container">
+  <div class="container">
       <header class="blog-header py-3">
         <div class="row flex-nowrap justify-content-between align-items-center">
           <div class="col-4 pt-1">
@@ -47,21 +50,25 @@
                 <path d="M21 21l-5.2-5.2"/>
               </svg>
             </a> -->
-            @guest
-              <a class="btn btn-sm btn-success mr-1" href="{{ route('login') }}">Connexion</a>
-              <a class="btn btn-sm btn-primary" href="{{ route('register') }}">Inscription</a>
-            @else
-            <a class="btn btn-sm btn-secondary mr-1" href="{{ route('products.create') }}">Ajouter un produit</a>
+              @guest
+                  <a class="btn btn-sm btn-success mr-1" href="{{ route('login') }}">Connexion</a>
+                  <a class="btn btn-sm btn-primary" href="{{ route('register') }}">Inscription</a>
+              @else
+                  <a class="btn btn-sm btn-outline-secondary mr-1" href="{{ route('products.create') }}">
+                      <i data-feather="plus" stroke-width="2" width="16" height="16"></i>
+                      Ajouter un produit
+                  </a>
 
-                <a id="navbarDropdown" class="nav-link dropdown-toggle " href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                    {{ Auth::user()->name }} <span class="caret"></span>
-                </a>
+                  <a id="navbarDropdown" class="nav-link dropdown-toggle " href="#" role="button" data-toggle="dropdown"
+                     aria-haspopup="true" aria-expanded="false" v-pre>
+                      {{ Auth::user()->name }} <span class="caret"></span>
+                  </a>
 
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item text-danger" href="{{ route('logout') }}"
-                       onclick="event.preventDefault();
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                      <a class="dropdown-item text-danger" href="{{ route('logout') }}"
+                         onclick="event.preventDefault();
                                      document.getElementById('logout-form').submit();">
-                        {{ __('Se déconnecter') }}
+                          {{ __('Se déconnecter') }}
                     </a>
 
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

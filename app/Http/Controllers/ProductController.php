@@ -35,23 +35,25 @@ class ProductController extends Controller
           'slug' => ['required', 'string'],
           'subtitle' => ['required', 'string'],
           'description' => ['required', 'string'],
-          'price' => ['required', 'numeric'],
+          'price' => ['required'],
       ]);
 
-      if ($validator->fails()) {
-        return back()
-                    ->withErrors($validator)
-                    ->withInput();
-      }
+        if ($validator->fails()) {
+            return back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
-      Product::create([
-          'title' => $request->title,
-          'slug' => $request->slug,
-          'subtitle' => $request->subtitle,
-          'description' => $request->description,
-          'price' => $request->price,
-          'image' => "https://via.placeholder.com/200x250",
-      ]);
+        $request->price = str_replace(",", ".", $request->price);
+
+        Product::create([
+            'title' => $request->title,
+            'slug' => $request->slug,
+            'subtitle' => $request->subtitle,
+            'description' => $request->description,
+            'price' => floatval($request->price) * 100,
+            'image' => "https://via.placeholder.com/200x250",
+        ]);
 
       return redirect()->route('products.index')->with('success', 'Produit ajouté avec succès');
 
@@ -66,9 +68,13 @@ class ProductController extends Controller
 
     public function edit($slug)
     {
-      $product = Product::where('slug', $slug)->firstOrFail();
+        $product = Product::where('slug', $slug)->firstOrFail();
 
-      return view('products.edit')->with('product', $product);
+        if ($product) {
+            $product->price = floatval($product->price / 100);
+        }
+
+        return view('products.edit')->with('product', $product);
     }
 
     public function update(Request $request, $slug)
@@ -79,7 +85,7 @@ class ProductController extends Controller
           'slug' => ['required', 'string'],
           'subtitle' => ['required', 'string'],
           'description' => ['required', 'string'],
-          'price' => ['required', 'numeric'],
+          'price' => ['required'],
       ]);
 
       if ($validator->fails()) {
@@ -87,14 +93,14 @@ class ProductController extends Controller
                     ->withErrors($validator)
                     ->withInput();
       }
-
-      $product = Product::where('slug', $slug)->firstOrFail();
+        $request->price = str_replace(",", ".", $request->price);
+        $product = Product::where('slug', $slug)->firstOrFail();
 
           $product->title = $request->title;
           $product->slug = $request->slug;
           $product->subtitle = $request->subtitle;
-          $product->description = $request->description;
-          $product->price = $request->price;
+        $product->description = $request->description;
+        $product->price = floatval($request->price) * 100;
           // 'image' = "https://via.placeholder.com/200x250",
           $product->save();
 

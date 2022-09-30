@@ -9,29 +9,29 @@
         <div class="row">
           <div class="col-lg-12 p-5 bg-white rounded shadow-sm mb-5">
             <a href="{{ route('cart.videpanier') }}" class="float-right my-2 text-danger">Vider le panier</a>
-            <!-- Shopping cart table -->
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col" class="border-0 bg-light">
-                      <div class="p-2 px-3 text-uppercase">Product</div>
-                    </th>
-                    <th scope="col" class="border-0 bg-light">
-                      <div class="py-2 text-uppercase">Prix HT</div>
-                    </th>
-                    <th scope="col" class="border-0 bg-light">
-                      <div class="py-2 text-uppercase">Prix</div>
-                    </th>
-                    <th scope="col" class="border-0 bg-light">
-                      <div class="py-2 text-uppercase">Quantity</div>
-                    </th>
-                    <th scope="col" class="border-0 bg-light">
-                      <div class="py-2 text-uppercase">Remove</div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
+              <!-- Shopping cart table -->
+              <div class="table-responsive">
+                  <table class="table">
+                      <thead>
+                      <tr>
+                          <th scope="col" class="border-0 bg-light">
+                              <div class="p-2 px-3 text-uppercase">Product</div>
+                          </th>
+                          <th scope="col" class="border-0 bg-light">
+                              <div class="py-2 text-uppercase">Prix Unitaire (HT)</div>
+                          </th>
+                          <th scope="col" class="border-0 bg-light">
+                              <div class="py-2 text-uppercase">Prix Total TTC</div>
+                          </th>
+                          <th scope="col" class="border-0 bg-light">
+                              <div class="py-2 text-uppercase">Quantity</div>
+                          </th>
+                          <th scope="col" class="border-0 bg-light">
+                              <div class="py-2 text-uppercase">Remove</div>
+                          </th>
+                      </tr>
+                      </thead>
+                      <tbody>
                   @foreach(Cart::content() as $product)
                   <tr>
                     <th scope="row" class="border-0">
