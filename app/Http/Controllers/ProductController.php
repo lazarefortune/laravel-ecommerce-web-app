@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Product;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
@@ -8,35 +9,63 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    //
-
     public function __construct()
     {
         $this->middleware('auth')->except('index', 'show');
     }
 
-    public function index(){
-
-      // $products = Product::inRandomOrder()->take(6)->get();
-      $products = Product::all();
-
-      return view('products.index')->with('products', $products);
+    private function createSlug(string $string): string
+    {
+        $string = strip_tags($string);
+        $string = preg_replace('~[^\pL\d]+~u', '-', $string);
+        setlocale(LC_ALL, 'en_US.utf8');
+        $string = iconv('utf-8', 'us-ascii//TRANSLIT', $string);
+        $string = preg_replace('~[^-\w]+~', '', $string);
+        $string = trim($string, '-');
+        $string = preg_replace('~-+~', '-', $string);
+        $string = strtolower($string);
+        if (empty($string)) {
+            return 'n-a';
+        }
+        return $string;
     }
 
-    public function create(){
-
-      return view('products.create');
+    private function getDBProductPrice($price): float
+    {
+        return (float)str_replace(',', '.', $price) * 100;
     }
 
-    public function store(Request $request){
+    private function getViewProductPrice($price): string
+    {
+        return number_format($price / 100, 2, ',', ' ');
+    }
 
-      $validator = Validator::make($request->all(), [
-          'title' => ['required', 'string', 'max:40'],
-          'slug' => ['required', 'string'],
-          'subtitle' => ['required', 'string'],
-          'description' => ['required', 'string'],
-          'price' => ['required'],
-      ]);
+    private function validateProduct($requestData): \Illuminate\Contracts\Validation\Validator
+    {
+        return Validator::make($requestData, [
+            'title' => ['required', 'string', 'max:40'],
+            'subtitle' => ['required', 'string'],
+            'description' => ['required', 'string', 'min:10'],
+            'price' => ['required'],
+        ]);
+    }
+
+
+    public function index()
+    {
+        $products = Product::inRandomOrder()->take(6)->get();
+//        $products = Product::all();
+        return view('products.index')->with('products', $products);
+    }
+
+    public function create()
+    {
+        return view('products.create');
+    }
+
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $validator = $this->validateProduct($request->all());
 
         if ($validator->fails()) {
             return back()
@@ -44,67 +73,65 @@ class ProductController extends Controller
                 ->withInput();
         }
 
-        $request->price = str_replace(",", ".", $request->price);
-
         Product::create([
             'title' => $request->title,
-            'slug' => $request->slug,
+            'slug' => $this->createSlug($request->title),
             'subtitle' => $request->subtitle,
             'description' => $request->description,
-            'price' => floatval($request->price) * 100,
+            'price' => $this->getDBProductPrice($request->price),
             'image' => "https://via.placeholder.com/200x250",
         ]);
 
-      return redirect()->route('products.index')->with('success', 'Produit ajouté avec succès');
-
+        return redirect()->route('products.index')->with('success', 'Produit ajouté avec succès');
     }
 
-    public function show($slug)
+    public function show($productId)
     {
-      $product = Product::where('slug', $slug)->firstOrFail();
+        $product = Product::where('id', $productId)->firstOrFail();
 
-      return view('products.show')->with('product', $product);
-    }
-
-    public function edit($slug)
-    {
-        $product = Product::where('slug', $slug)->firstOrFail();
-
-        if ($product) {
-            $product->price = floatval($product->price / 100);
+        if (!$product) {
+            return redirect()->route('products.index')->with('error', 'Produit introuvable');
         }
+
+        return view('products.show')->with('product', $product);
+    }
+
+    public function edit($productId)
+    {
+        $product = Product::find($productId);
+        if (!$product) {
+            abort(404);
+        }
+
+        $product->price = $this->getViewProductPrice($product->price);
 
         return view('products.edit')->with('product', $product);
     }
 
-    public function update(Request $request, $slug)
+    public function update(Request $request, $productId)
     {
+        $product = Product::find($productId);
+        if (!$product) {
+            abort(404);
+        }
 
-      $validator = Validator::make($request->all(), [
-          'title' => ['required', 'string', 'max:40'],
-          'slug' => ['required', 'string'],
-          'subtitle' => ['required', 'string'],
-          'description' => ['required', 'string'],
-          'price' => ['required'],
-      ]);
+        $validator = $this->validateProduct($request->all());
 
-      if ($validator->fails()) {
-        return back()
-                    ->withErrors($validator)
-                    ->withInput();
-      }
-        $request->price = str_replace(",", ".", $request->price);
-        $product = Product::where('slug', $slug)->firstOrFail();
+        if ($validator->fails()) {
+            return back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
-          $product->title = $request->title;
-          $product->slug = $request->slug;
-          $product->subtitle = $request->subtitle;
+        $product->title = $request->title;
+        $product->slug = $this->createSlug($request->title);
+        $product->subtitle = $request->subtitle;
         $product->description = $request->description;
-        $product->price = floatval($request->price) * 100;
-          // 'image' = "https://via.placeholder.com/200x250",
-          $product->save();
+        $product->price = $this->getDBProductPrice($request->price);
+        $product->image = "https://via.placeholder.com/200x250";
+        $product->save();
 
-        return redirect()->route('products.show', $product->slug)->with('success', 'Produit mis à jour avec succès');
-
+        return redirect()->route('products.show', $productId)->with('success', 'Produit modifié avec succès');
     }
+
 }
